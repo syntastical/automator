@@ -3,8 +3,8 @@ builds:
       - darwin
       - windows
     goarch:
-      - arm64
-    binary: bootstrap
+      - amd64
+    binary: automator
 archives:
   - format: zip
     strip_parent_binary_folder: true
