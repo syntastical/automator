@@ -1,0 +1,18 @@
+commands:
+  - type: move
+    x: 1
+    y: 1
+  - type: sleep
+    duration: 3000
+  - type: move
+    x: 100
+    y: 100
+  - type: sleep
+    duration: 3000
+  - type: move
+    x: 300
+    y: 300
+  - type: sleep
+    duration: 3000
+  - type: click
+    button: right

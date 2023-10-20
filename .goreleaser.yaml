@@ -1,0 +1,10 @@
+builds:
+  - goos:
+      - darwin
+      - windows
+    goarch:
+      - arm64
+    binary: bootstrap
+archives:
+  - format: zip
+    strip_parent_binary_folder: true
