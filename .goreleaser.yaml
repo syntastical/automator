@@ -4,6 +4,8 @@ builds:
       - windows
     goarch:
       - amd64
+    env:
+      - CGO_ENABLED=1
     binary: automator
 archives:
   - format: zip
