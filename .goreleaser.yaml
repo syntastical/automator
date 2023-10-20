@@ -1,6 +1,6 @@
 builds:
   - goos:
-      - darwin
+#      - darwin
       - windows
     goarch:
       - amd64
