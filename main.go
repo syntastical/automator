@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/go-vgo/robotgo"
+	"math/rand"
 	"time"
 
 	//"github.com/go-vgo/robotgo"
@@ -11,70 +12,54 @@ import (
 	"os"
 )
 
-//	type Config struct {
-//		Commands []struct {
-//			Type string `yaml:"type"`
-//		} `yaml:"commands"`
-//	}
 type Config struct {
 	Commands []struct {
-		Type     string
-		X        int
-		Y        int
-		MinX     int
-		MinY     int
-		MaxX     string
-		MaxY     string
-		Button   string
-		Duration int64
+		Type     *string
+		X        *int
+		Y        *int
+		MinX     *int `yaml:"minX"`
+		MinY     *int `yaml:"minY"`
+		MaxX     *int `yaml:"maxX"`
+		MaxY     *int `yaml:"maxY"`
+		Button   *string
+		Duration *int64
 	}
 }
 
-//type Command struct {
-//	Type     string
-//	X        int
-//	Y        int
-//	MinX     int
-//	MinY     int
-//	MaxX     string
-//	MaxY     string
-//	Button   string
-//	Duration int
-//}
-
 func main() {
-
 	file, err := os.Open("script.yaml")
 	if err != nil {
 		panic("unable to open configuration file script.yaml")
 	}
-	x, err := io.ReadAll(file)
+	rawConfig, err := io.ReadAll(file)
 	if err != nil {
-		panic("failed reading script.yaml")
+		panic(fmt.Errorf("failed reading script.yaml: %w", err))
 	}
 
 	var config Config
-	yaml.Unmarshal(x, &config)
-	for _, command := range config.Commands {
-		fmt.Println(command)
-		switch command.Type {
-		case "move":
-			robotgo.Move(command.X, command.Y)
-		case "click":
-			robotgo.Click(command.Button)
-		case "sleep":
-			fmt.Printf("Sleeping for %d milliseconds.", command.Duration)
-			time.Sleep(time.Duration(command.Duration) * time.Millisecond)
+	err = yaml.Unmarshal(rawConfig, &config)
+	if err != nil {
+		panic(fmt.Errorf("failed to parse script.yaml: %w", err))
+	}
+	for {
+		for _, command := range config.Commands {
+			switch *command.Type {
+			case "move":
+				if command.X != nil && command.Y != nil {
+					robotgo.MoveSmooth(*command.X, *command.Y)
+				} else if command.MinX != nil && command.MinY != nil && command.MaxX != nil && command.MaxY != nil {
+					x := rand.Intn(*command.MaxX-*command.MinX) + *command.MinX
+					y := rand.Intn(*command.MaxY-*command.MinY) + *command.MinY
+					robotgo.MoveSmooth(x, y)
+				} else {
+					panic(fmt.Sprintf("Invalid move configuration: %+v", command))
+				}
+			case "click":
+				robotgo.Click(command.Button)
+			case "sleep":
+				fmt.Printf("Sleeping for %d milliseconds.", command.Duration)
+				time.Sleep(time.Duration(*command.Duration) * time.Millisecond)
+			}
 		}
 	}
-
-	//if ok {
-	//
-	//	for _, command := range commands {
-	//		if a, ok := command.(map[string]any); ok {
-	//			fmt.Println(a["type"])
-	//		}
-	//
-	//	}
-	//}
 }

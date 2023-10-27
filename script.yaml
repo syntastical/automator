@@ -1,18 +1,13 @@
 commands:
   - type: move
-    x: 1
-    y: 1
+    minX: 200
+    minY: 200
+    maxX: 400
+    maxY: 400
   - type: sleep
-    duration: 3000
-  - type: move
-    x: 100
-    y: 100
-  - type: sleep
-    duration: 3000
-  - type: move
-    x: 300
-    y: 300
-  - type: sleep
-    duration: 3000
-  - type: click
-    button: right
+    duration: 5000
+
+#  - type: sleep
+#    duration: 3000
+#  - type: click
+#    button: right
