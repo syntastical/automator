@@ -4,10 +4,14 @@ commands:
     minY: 200
     maxX: 400
     maxY: 400
+  - type: click
+    button: left
+  - type: keytap
+    key: a
+  - type: keytap
+    key: s
+    alt:
+      - cmd
   - type: sleep
-    duration: 5000
-
-#  - type: sleep
-#    duration: 3000
-#  - type: click
-#    button: right
+    minSleep: 4000
+    maxSleep: 7000

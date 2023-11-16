@@ -22,7 +22,10 @@ type Config struct {
 		MaxX     *int `yaml:"maxX"`
 		MaxY     *int `yaml:"maxY"`
 		Button   *string
-		Duration *int64
+		MinSleep *int64 `yaml:"minSleep"`
+		MaxSleep *int64 `yaml:"maxSleep"`
+		Key      *string
+		Alt      *[]interface{}
 	}
 }
 
@@ -55,10 +58,18 @@ func main() {
 					panic(fmt.Sprintf("Invalid move configuration: %+v", command))
 				}
 			case "click":
-				robotgo.Click(command.Button)
+				robotgo.Click(*command.Button)
 			case "sleep":
-				fmt.Printf("Sleeping for %d milliseconds.", command.Duration)
-				time.Sleep(time.Duration(*command.Duration) * time.Millisecond)
+				sleepTime := rand.Int63n(*command.MaxSleep-*command.MinSleep) + *command.MinSleep
+				fmt.Printf("Sleeping for %d milliseconds.", sleepTime)
+				time.Sleep(time.Duration(sleepTime) * time.Millisecond)
+			case "keytap":
+				if command.Alt == nil {
+					robotgo.KeyTap(*command.Key)
+				} else {
+					robotgo.KeyTap(*command.Key, *command.Alt...)
+				}
+
 			}
 		}
 	}
